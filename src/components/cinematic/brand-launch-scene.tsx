@@ -29,13 +29,14 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
   const top = useRef<Group>(null);
   const side = useRef<Group>(null);
   const base = useRef<Group>(null);
+  const stage = useRef<Group>(null);
   const sweep = useRef<PointLight>(null);
   const { camera } = useThree();
   const vShape = useMemo(() => letterShape("Y"), []);
   const dShape = useMemo(() => letterShape("D"), []);
 
   useEffect(() => {
-    if (!v.current || !d.current || !p.current || !stem.current || !top.current || !side.current || !base.current || !sweep.current) return;
+    if (!v.current || !d.current || !p.current || !stem.current || !top.current || !side.current || !base.current || !sweep.current || !stage.current) return;
     const speed = compact ? .68 : 1;
     const timeline = gsap.timeline({ defaults: { ease: "power3.out" }, onComplete });
     gsap.set(v.current.position, { x: 0, y: 0, z: -12 });
@@ -50,6 +51,7 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
     gsap.set(side.current.position, { x: 3.2, y: .7 });
     gsap.set(base.current.position, { x: 2.4, y: -2.4 });
     camera.position.set(0, 0, 8);
+    gsap.set(stage.current.scale, { x: compact ? .56 : 1, y: compact ? .56 : 1, z: compact ? .56 : 1 });
 
     timeline
       .to(v.current.position, { z: 0, duration: 1.15 * speed }, .15 * speed)
@@ -82,7 +84,7 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
 
   return <>
     <ambientLight intensity={.42}/><directionalLight position={[-4, 5, 7]} intensity={3.5} color="#bdd1ff"/><directionalLight position={[5, -1, 5]} intensity={2.5} color="#805fff"/><pointLight ref={sweep} position={[0, 2, 4]} intensity={8} distance={11} color="#42baff"/>
-    <group position={[0, 0, 0]}>
+    <group ref={stage} position={[0, 0, 0]}>
       <group ref={v}><mesh><extrudeGeometry args={[vShape, extrude]}/><meshPhysicalMaterial {...material}/></mesh></group>
       <group ref={d}><mesh><extrudeGeometry args={[dShape, extrude]}/><meshPhysicalMaterial {...material}/></mesh></group>
       <group ref={p}>
@@ -96,5 +98,5 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
 }
 
 export function BrandLaunchScene(props: SceneProps) {
-  return <Canvas dpr={props.compact ? [1, 1.15] : [1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} camera={{ position: [0, 0, 8], fov: 38 }}><LaunchGeometry {...props}/></Canvas>;
+  return <Canvas dpr={props.compact ? [1, 1.1] : [1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} camera={{ position: [0, 0, 8], fov: props.compact ? 54 : 38 }}><LaunchGeometry {...props}/></Canvas>;
 }
