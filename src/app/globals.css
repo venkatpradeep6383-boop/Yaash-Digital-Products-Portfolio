@@ -1642,7 +1642,7 @@ footer {
 .brand-launch-halo.phase-4 { opacity:1; transform:translate(-50%,-50%) scale(1); }
 .brand-launch-canvas { position:absolute; inset:0; }
 .brand-launch-words { position:absolute; z-index:2; inset:50% auto auto 50%; width:min(760px,64vw); display:grid; grid-template-columns:repeat(3,1fr); transform:translate(-50%,clamp(100px,13vh,145px)); color:#7f8697; font-size:clamp(8px,.7vw,11px); letter-spacing:.34em; text-align:center; pointer-events:none; }
-.brand-launch-words span { opacity:0; transform:translateY(9px); transition:opacity .55s ease,transform .55s ease,color .55s ease; }
+.brand-launch-words span { opacity:0; transform:translateY(9px); transition:opacity .16s ease,transform .16s ease,color .16s ease; }
 .brand-launch-words.phase-1 span:nth-child(1),.brand-launch-words.phase-2 span:nth-child(2),.brand-launch-words.phase-3 span:nth-child(3) { opacity:1; transform:none; color:#e3e7ef; }
 .brand-launch-words { width:min(760px,78vw); display:block; font:520 clamp(18px,1.8vw,29px)/1 var(--display); color:#e3e7ef; }
 .brand-launch-words span { position:absolute; inset:0; }
