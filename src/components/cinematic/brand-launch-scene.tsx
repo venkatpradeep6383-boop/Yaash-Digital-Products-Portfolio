@@ -43,7 +43,8 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
     gsap.set(v.current.rotation, { x: -.28, y: -.72, z: .12 });
     gsap.set(d.current.position, { x: 5.5, y: 0, z: -3.5 });
     gsap.set(d.current.rotation, { x: .14, y: .78, z: -.08 });
-    gsap.set(p.current.position, { x: 2.75, y: -.18, z: -.5 });
+    // P follows the same deep-space entrance language as Y and D.
+    gsap.set(p.current.position, { x: 7.5, y: -.18, z: -7 });
     gsap.set(p.current.rotation, { x: -.18, y: -.42, z: .08 });
     gsap.set([stem.current.position, top.current.position, side.current.position, base.current.position], { z: 0 });
     // Keep every P fragment off-canvas until its assembly beat.
@@ -62,6 +63,7 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
       .to(d.current.position, { z: 0, duration: .45 * speed }, 2.25 * speed)
       .to(d.current.rotation, { x: 0, y: 0, z: 0, duration: 1.05 * speed }, 1.45 * speed)
       .call(() => onPhase(2), [], 2.35 * speed)
+      .to(p.current.position, { x: 2.75, z: -.5, duration: 1.05 * speed, ease: "power3.out" }, 2.35 * speed)
       .to(stem.current.position, { x: 0, y: 0, duration: .85 * speed }, 2.75 * speed)
       .to(top.current.position, { x: 0, y: 0, duration: .85 * speed }, 2.9 * speed)
       .to(side.current.position, { x: 0, y: 0, duration: .85 * speed }, 3.05 * speed)
