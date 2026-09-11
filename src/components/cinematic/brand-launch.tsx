@@ -26,6 +26,25 @@ export function BrandLaunch() {
   const handlePhase = useCallback((next: number) => setPhase(next), []);
   const handlePortal = useCallback(() => setPortal(true), []);
 
+  useEffect(() => {
+    if (!visible || config.reduced || phase === 0 || typeof window === "undefined") return;
+    const AudioCtor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtor) return;
+    try {
+      const ctx = new AudioCtor();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = phase === 1 ? 220 : phase === 2 ? 277.18 : phase === 3 ? 329.63 : 440;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.16);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.18);
+      osc.addEventListener("ended", () => void ctx.close());
+    } catch { /* autoplay may be blocked until interaction */ }
+  }, [config.reduced, phase, visible]);
+
   const finish = useCallback(() => {
     sessionStorage.setItem("ydp-intro-seen", "1");
     document.body.classList.remove("brand-launch-active");
