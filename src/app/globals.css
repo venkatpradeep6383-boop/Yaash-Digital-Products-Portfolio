@@ -11,6 +11,10 @@
   --font: var(--font-body), sans-serif;
   --display: var(--font-display), sans-serif;
 }
+
+/* Final display-type guard: prevent glyph collisions at large and narrow widths. */
+.hero-v2 h1,.intro-sequence h1,.scene-copy h2,.final-statement h2,.info-hero h1,.process-cta h2,.pricing-package h2 { line-height:1.02; letter-spacing:-.04em; overflow-wrap:normal; word-break:normal; }
+@media(max-width:520px){.hero-v2 h1,.intro-sequence h1,.scene-copy h2,.final-statement h2,.info-hero h1,.process-cta h2,.pricing-package h2 { line-height:1.06; letter-spacing:-.03em; }}
 * {
   box-sizing: border-box;
 }
@@ -1754,6 +1758,30 @@ footer {
 }
 .header .brand-mark { font-size:0; }
 .header .brand-mark::after { content:"Y"; font:500 23px var(--display); }
+
+/* Keep large display type legible across fallback and mobile fonts. */
+.hero-v2 h1,
+.intro-sequence h1,
+.scene-copy h2,
+.final-statement h2,
+.info-hero h1,
+.process-cta h2,
+.pricing-package h2 {
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.intro-line { overflow: hidden; }
+@media (max-width: 520px) {
+  .hero-v2 h1,
+  .intro-sequence h1,
+  .scene-copy h2,
+  .final-statement h2,
+  .info-hero h1,
+  .process-cta h2,
+  .pricing-package h2 { line-height: 1.02; letter-spacing: -0.035em; }
+}
 .header .nav {
   position: absolute;
   left: 50%;
@@ -2224,3 +2252,7 @@ button:focus-visible {
     min-height: 48px;
   }
 }
+
+/* Final display-type guard: prevent glyph collisions at large and narrow widths. */
+.hero-v2 h1,.intro-sequence h1,.scene-copy h2,.final-statement h2,.info-hero h1,.process-cta h2,.pricing-package h2 { line-height:1.02; letter-spacing:-.04em; overflow-wrap:normal; word-break:normal; }
+@media(max-width:520px){.hero-v2 h1,.intro-sequence h1,.scene-copy h2,.final-statement h2,.info-hero h1,.process-cta h2,.pricing-package h2 { line-height:1.06; letter-spacing:-.03em; }}
