@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const BrandLaunchScene = dynamic(() => import("./brand-launch-scene").then((module) => module.BrandLaunchScene), {
@@ -23,15 +23,28 @@ export function BrandLaunch() {
   const [phase, setPhase] = useState(config.reduced ? 4 : 0);
   const [portal, setPortal] = useState(false);
   const [canSkip, setCanSkip] = useState(false);
+  const audioRef = useRef<AudioContext | null>(null);
   const handlePhase = useCallback((next: number) => setPhase(next), []);
   const handlePortal = useCallback(() => setPortal(true), []);
 
   useEffect(() => {
+    if (!visible || config.reduced) return;
+    const unlock = () => {
+      if (audioRef.current) return;
+      const Ctor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!Ctor) return;
+      try { audioRef.current = new Ctor(); void audioRef.current.resume(); } catch { /* unavailable */ }
+    };
+    window.addEventListener("pointerdown", unlock, { once: true });
+    window.addEventListener("keydown", unlock, { once: true });
+    return () => { window.removeEventListener("pointerdown", unlock); window.removeEventListener("keydown", unlock); };
+  }, [config.reduced, visible]);
+
+  useEffect(() => {
     if (!visible || config.reduced || phase === 0 || typeof window === "undefined") return;
-    const AudioCtor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtor) return;
+    const ctx = audioRef.current;
+    if (!ctx) return;
     try {
-      const ctx = new AudioCtor();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
@@ -41,7 +54,6 @@ export function BrandLaunch() {
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.16);
       osc.connect(gain).connect(ctx.destination);
       osc.start(); osc.stop(ctx.currentTime + 0.18);
-      osc.addEventListener("ended", () => void ctx.close());
     } catch { /* autoplay may be blocked until interaction */ }
   }, [config.reduced, phase, visible]);
 
