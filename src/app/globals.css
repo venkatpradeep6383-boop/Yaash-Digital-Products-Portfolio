@@ -1753,8 +1753,6 @@ footer {
   place-items: center;
   font: 500 23px var(--display);
   transform: skew(-14deg);
-  border-left: 2px solid currentColor;
-  border-right: 2px solid currentColor;
 }
 .header .brand-mark { font-size:0; }
 .header .brand-mark::after { content:"Y"; font:500 23px var(--display); }
