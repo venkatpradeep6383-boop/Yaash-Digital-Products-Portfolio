@@ -46,10 +46,11 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
     gsap.set(p.current.position, { x: 2.75, y: -.18, z: -.5 });
     gsap.set(p.current.rotation, { x: -.18, y: -.42, z: .08 });
     gsap.set([stem.current.position, top.current.position, side.current.position, base.current.position], { z: 0 });
-    gsap.set(stem.current.position, { x: -3.2, y: -2.4 });
-    gsap.set(top.current.position, { x: .4, y: 3.2 });
-    gsap.set(side.current.position, { x: 3.2, y: .7 });
-    gsap.set(base.current.position, { x: 2.4, y: -2.4 });
+    // Keep every P fragment off-canvas until its assembly beat.
+    gsap.set(stem.current.position, { x: -4.8, y: -3.8 });
+    gsap.set(top.current.position, { x: .8, y: 5.2 });
+    gsap.set(side.current.position, { x: 4.8, y: .9 });
+    gsap.set(base.current.position, { x: 4.2, y: -3.8 });
     camera.position.set(0, 0, 8);
     gsap.set(stage.current.scale, { x: compact ? .56 : 1, y: compact ? .56 : 1, z: compact ? .56 : 1 });
 
@@ -98,5 +99,5 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
 }
 
 export function BrandLaunchScene(props: SceneProps) {
-  return <Canvas dpr={props.compact ? [1, 1.1] : [1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} camera={{ position: [0, 0, 8], fov: props.compact ? 54 : 38 }}><LaunchGeometry {...props}/></Canvas>;
+  return <Canvas dpr={props.compact ? [1.25, 1.6] : [1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} camera={{ position: [0, 0, 8], fov: props.compact ? 54 : 38 }}><LaunchGeometry {...props}/></Canvas>;
 }
