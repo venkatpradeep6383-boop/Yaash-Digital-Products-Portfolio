@@ -1754,8 +1754,7 @@ footer {
   font: 500 23px var(--display);
   transform: skew(-14deg);
 }
-.header .brand-mark { font-size:0; }
-.header .brand-mark::after { content:"Y"; font:500 23px var(--display); }
+.header .brand-mark { display:none; }
 
 /* Keep large display type legible across fallback and mobile fonts. */
 .hero-v2 h1,
