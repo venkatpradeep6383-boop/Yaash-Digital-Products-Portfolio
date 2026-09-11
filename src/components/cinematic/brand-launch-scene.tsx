@@ -44,7 +44,7 @@ function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) 
     gsap.set(d.current.position, { x: 5.5, y: 0, z: -3.5 });
     gsap.set(d.current.rotation, { x: .14, y: .78, z: -.08 });
     // P follows the same deep-space entrance language as Y and D.
-    gsap.set(p.current.position, { x: 7.5, y: -.18, z: -7 });
+    gsap.set(p.current.position, { x: 12, y: -.18, z: -10 });
     gsap.set(p.current.rotation, { x: -.18, y: -.42, z: .08 });
     gsap.set([stem.current.position, top.current.position, side.current.position, base.current.position], { z: 0 });
     // Keep every P fragment off-canvas until its assembly beat.
