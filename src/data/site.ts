@@ -79,6 +79,15 @@ export const projects: Project[] = [
     features: ["Live tracking", "Attendance", "Visits", "Routes", "Reports"],
     technologies: ["Next.js", "React", "TypeScript", "PostgreSQL"], theme: "blue",
   },
+  {
+    number: "06", slug: "canops", name: "CANOPS",
+    category: "Delivery Operations / Rider App / Customer Platform",
+    summary: "A connected operating system for water-can distribution, bringing orders, dispatch, riders, customers, payments and returnable-can inventory into one live workflow.",
+    problem: "Water distributors need to coordinate recurring orders, route execution, collections and returnable cans across office teams, riders and customers without losing operational visibility.",
+    solution: "A role-based delivery platform connecting an admin command centre with focused Rider and Customer applications, all backed by the same live operational data.",
+    features: ["Operations dashboard", "Order management", "Route planning", "Rider application", "Customer application", "Payments & collections", "Returnable-can tracking", "Recurring delivery"],
+    technologies: ["React", "TypeScript", "TanStack Start", "PostgreSQL", "Capacitor", "Vercel"], theme: "blue",
+  },
 ];
 
 export const services = [

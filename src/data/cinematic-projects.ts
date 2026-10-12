@@ -6,6 +6,7 @@ export type CinematicProject = {
   category: string;
   description: string;
   screenshot?: string;
+  layers?: string[];
   website?: string;
   features: string[];
   stack: string[];
@@ -18,6 +19,7 @@ export const cinematicProjects: CinematicProject[] = [
     category: "Premium Automotive Website",
     description: "A precision-built digital presence designed to turn automotive craft into trust, discovery and enquiries.",
     screenshot: "/images/dk-site-desktop-01.png",
+    layers: ["/images/dk-site-mobile-01.png", "/images/dk-site-mobile-02.png"],
     features: ["Website", "CMS", "SEO", "Lead Generation"],
     stack: ["Next.js", "TypeScript", "Vercel"], tone: "ice",
   },
@@ -26,6 +28,7 @@ export const cinematicProjects: CinematicProject[] = [
     category: "Detailing Studio Operating System",
     description: "A connected workshop workspace for jobs, customers, services, billing and business reporting.",
     screenshot: "/images/dk-detailing-pos-dashboard.png",
+    layers: ["/images/dk-pos-desktop-jobs.png", "/images/dk-pos-desktop-billing.png"],
     features: ["Billing", "Customers", "Services", "Expenses", "Reports"],
     stack: ["React", "TypeScript", "PostgreSQL"], tone: "gold",
   },
@@ -42,6 +45,7 @@ export const cinematicProjects: CinematicProject[] = [
     category: "Sales & Revenue Management Platform",
     description: "A focused sales environment that makes every lead, follow-up, deal and revenue target visible.",
     screenshot: "/images/dealup-crm-dashboard.png",
+    layers: ["/images/dealup-desktop-pipeline.png", "/images/dealup-desktop-overview.png"],
     features: ["CRM", "Pipeline", "Revenue", "Analytics", "Follow-ups"],
     stack: ["Next.js", "TypeScript", "PostgreSQL"], tone: "violet",
   },
@@ -51,5 +55,15 @@ export const cinematicProjects: CinematicProject[] = [
     description: "A live operating picture for field teams, attendance, visits, route activity and reporting.",
     features: ["Live Tracking", "Attendance", "Visits", "Routes", "Reports"],
     stack: ["Next.js", "React", "Maps", "PostgreSQL"], tone: "cyan",
+  },
+  {
+    number: "06", slug: "canops", short: "CANOPS", name: "CANOPS",
+    category: "Delivery & Distribution Management Platform",
+    description: "One live system connecting orders, dispatch, routes, riders, customers, collections and every returnable can in circulation.",
+    screenshot: "/images/canops-admin-dashboard-final.png",
+    layers: ["/images/canops-rider-home-final.jpeg", "/images/canops-rider-new-customer-final.jpeg"],
+    website: "https://canops-delivery-management.vercel.app",
+    features: ["Dispatch", "Route Planning", "Rider App", "Customer App", "Payments", "Can Tracking"],
+    stack: ["React", "TypeScript", "TanStack Start", "PostgreSQL", "Capacitor"], tone: "cyan",
   },
 ];

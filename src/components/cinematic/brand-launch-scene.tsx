@@ -1,108 +1,34 @@
 "use client";
-
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Environment, Float, Lightformer, MeshTransmissionMaterial, Sparkles } from "@react-three/drei";
 import gsap from "gsap";
-import { useEffect, useMemo, useRef } from "react";
-import { Group, Path, PointLight, Shape } from "three";
+import { useEffect, useRef } from "react";
+import type { Group, Mesh, PerspectiveCamera, PointLight } from "three";
 
-type SceneProps = { compact: boolean; onPhase: (phase: number) => void; onPortal: () => void; onComplete: () => void };
+type SceneProps={compact:boolean;onPhase:(phase:number)=>void;onPortal:()=>void;onComplete:()=>void};
 
-function letterShape(letter: "Y" | "D") {
-  const shape = new Shape();
-  if (letter === "Y") {
-    shape.moveTo(-1.08, 1.45); shape.lineTo(-.47, 1.45); shape.lineTo(0, .55); shape.lineTo(.47, 1.45); shape.lineTo(1.08, 1.45); shape.lineTo(.3, .05); shape.lineTo(.3, -1.45); shape.lineTo(-.3, -1.45); shape.lineTo(-.3, .05); shape.closePath();
-  } else {
-    shape.moveTo(-.95, -1.45); shape.lineTo(-.95, 1.45); shape.lineTo(.05, 1.45); shape.bezierCurveTo(1.35, 1.45, 1.35, -1.45, .05, -1.45); shape.closePath();
-    const hole = new Path(); hole.moveTo(-.38, -.83); hole.lineTo(-.38, .83); hole.lineTo(-.02, .83); hole.bezierCurveTo(.62, .83, .62, -.83, -.02, -.83); hole.closePath(); shape.holes.push(hole);
-  }
-  return shape;
+function DigitalBloom({compact,onPhase,onPortal,onComplete}:SceneProps){
+ const world=useRef<Group>(null),core=useRef<Mesh>(null),ringA=useRef<Mesh>(null),ringB=useRef<Mesh>(null),light=useRef<PointLight>(null);const getThreeState=useThree((state)=>state.get);
+ useFrame((state,delta)=>{if(!world.current||!core.current||!ringA.current||!ringB.current)return;core.current.rotation.x+=delta*.13;core.current.rotation.y+=delta*.2;ringA.current.rotation.z+=delta*.09;ringB.current.rotation.x-=delta*.07;if(state.clock.elapsedTime>7.5&&state.clock.elapsedTime<9.5)world.current.rotation.y=Math.sin(state.clock.elapsedTime*.45)*.025});
+ useEffect(()=>{if(!world.current||!light.current)return;const camera=getThreeState().camera as PerspectiveCamera;const shot=(p:[number,number,number],t:[number,number,number])=>{camera.position.set(...p);camera.lookAt(...t)};camera.fov=compact?58:40;camera.updateProjectionMatrix();shot([2.1,.8,1.45],[0,.15,0]);
+ const tl=gsap.timeline({defaults:{ease:"power3.inOut"}});tl.call(()=>onPhase(1),[],0).to(camera.position,{x:1.15,y:.25,z:2.35,duration:1.15,ease:"sine.inOut"},0)
+ .call(()=>{onPhase(2);shot([-2.5,1.6,3.1],[0,0,0])},[],1.2).to(camera.position,{x:-1.15,y:.4,z:3.8,duration:1.15},1.2)
+ .call(()=>{onPhase(3);shot([.4,-1.9,3.3],[0,0,0])},[],2.4).to(camera.position,{x:1.4,y:-.65,z:4.5,duration:1.15},2.4)
+ .call(()=>{onPhase(4);shot([4.8,2.3,6.4],[0,0,0])},[],3.6).to(camera.position,{x:2.1,y:.8,z:7.5,duration:1.35},3.6)
+ .call(()=>{onPhase(5);shot([0,.25,7.8],[0,0,0])},[],5).to(camera.position,{x:0,y:.05,z:compact?10.8:9.2,duration:1.5,ease:"power4.out"},5).to(world.current.rotation,{x:0,y:0,z:0,duration:1.45,ease:"power4.out"},5).to(world.current.scale,{x:1.08,y:1.08,z:1.08,duration:1.4,ease:"power4.out"},5).to(light.current,{intensity:34,duration:1.4},5)
+ .call(()=>onPhase(6),[],6.5).call(()=>onPhase(7),[],7.5).call(()=>onPhase(8),[],7.5)
+ .call(()=>{onPhase(9);onPortal()},[],9.5).to(camera.position,{z:1.1,duration:.5,ease:"power4.in"},9.5).to(world.current.scale,{x:2.4,y:2.4,z:2.4,duration:.5,ease:"power4.in"},9.5).call(onComplete,[],10);return()=>{tl.kill()}},[compact,getThreeState,onComplete,onPhase,onPortal]);
+ return <><color attach="background" args={["#dbeafa"]}/><fog attach="fog" args={["#dbeafa",9,22]}/><ambientLight intensity={.8}/><pointLight ref={light} position={[-4,3,5]} intensity={22} distance={18} color="#b9ddff"/><directionalLight position={[5,6,5]} intensity={4} color="#fff1ca"/><directionalLight position={[-5,-1,4]} intensity={3.5} color="#d7bdff"/>
+ <Environment resolution={128}><Lightformer intensity={5} color="#ffffff" position={[0,5,4]} scale={[8,2,1]}/><Lightformer intensity={5} color="#76d9ff" position={[-5,1,2]} rotation={[0,Math.PI/2,0]} scale={[5,2,1]}/><Lightformer intensity={4} color="#ff9fd3" position={[5,0,2]} rotation={[0,-Math.PI/2,0]} scale={[5,2,1]}/><Lightformer intensity={3} color="#d8ff8a" position={[0,-4,2]} scale={[6,2,1]}/></Environment>
+ <Sparkles count={compact?28:52} scale={[9,6,5]} size={2.2} speed={.22} opacity={.38} color="#ffffff"/>
+ <group ref={world} rotation={[.18,-.22,.12]}>
+  <Float speed={1.1} rotationIntensity={.08} floatIntensity={.15}><mesh ref={core} castShadow><torusKnotGeometry args={[1.32,.42,220,32,2,3]}/><MeshTransmissionMaterial transmission={.72} thickness={1.5} roughness={.06} chromaticAberration={.12} anisotropy={.3} distortion={.08} distortionScale={.18} temporalDistortion={.04} color="#d9f3ff" attenuationColor="#ffb4df" attenuationDistance={2.2} metalness={.08}/></mesh></Float>
+  <mesh ref={ringA} rotation={[1.12,.18,.35]} castShadow><torusGeometry args={[2.35,.075,24,180]}/><meshPhysicalMaterial color="#f3f6ff" metalness={.95} roughness={.09} clearcoat={1}/></mesh>
+  <mesh ref={ringB} rotation={[.35,1.05,-.5]} castShadow><torusGeometry args={[2.72,.045,20,180]}/><meshPhysicalMaterial color="#c4e9ff" metalness={.88} roughness={.12} emissive="#7cbfff" emissiveIntensity={.16}/></mesh>
+  <mesh position={[-2.2,.82,-.45]} rotation={[.35,.4,.6]} castShadow><icosahedronGeometry args={[.52,1]}/><meshPhysicalMaterial color="#f5c7e1" metalness={.55} roughness={.12} clearcoat={1}/></mesh>
+  <mesh position={[2.18,-.74,.15]} rotation={[.1,.4,.3]} castShadow><octahedronGeometry args={[.48,0]}/><meshPhysicalMaterial color="#d9f49d" metalness={.45} roughness={.15} clearcoat={1}/></mesh>
+  <mesh position={[1.72,1.38,-.72]} rotation={[.8,.3,.5]} castShadow><boxGeometry args={[.2,1.05,.2]}/><meshPhysicalMaterial color="#e9d6ff" metalness={.8} roughness={.1}/></mesh>
+ </group>
+ <mesh position={[0,-3,-1]} rotation={[-Math.PI/2,0,0]} receiveShadow><planeGeometry args={[24,20]}/><meshPhysicalMaterial color="#d6e4f0" metalness={.35} roughness={.22} clearcoat={1}/></mesh></>;
 }
-
-const material = { color: "#303949", metalness: .9, roughness: .14, clearcoat: 1, clearcoatRoughness: .08, transmission: .02, thickness: .3 } as const;
-const extrude = { depth: .5, bevelEnabled: true, bevelSegments: 4, steps: 1, bevelSize: .065, bevelThickness: .065 } as const;
-
-function LaunchGeometry({ compact, onPhase, onPortal, onComplete }: SceneProps) {
-  const v = useRef<Group>(null);
-  const d = useRef<Group>(null);
-  const p = useRef<Group>(null);
-  const stem = useRef<Group>(null);
-  const top = useRef<Group>(null);
-  const side = useRef<Group>(null);
-  const base = useRef<Group>(null);
-  const stage = useRef<Group>(null);
-  const sweep = useRef<PointLight>(null);
-  const { camera } = useThree();
-  const vShape = useMemo(() => letterShape("Y"), []);
-  const dShape = useMemo(() => letterShape("D"), []);
-
-  useEffect(() => {
-    if (!v.current || !d.current || !p.current || !stem.current || !top.current || !side.current || !base.current || !sweep.current || !stage.current) return;
-    const speed = compact ? .68 : 1;
-    const timeline = gsap.timeline({ defaults: { ease: "power3.out" }, onComplete });
-    gsap.set(v.current.position, { x: 0, y: 0, z: -12 });
-    gsap.set(v.current.rotation, { x: -.28, y: -.72, z: .12 });
-    gsap.set(d.current.position, { x: 5.5, y: 0, z: -3.5 });
-    gsap.set(d.current.rotation, { x: .14, y: .78, z: -.08 });
-    // P follows the same deep-space entrance language as Y and D.
-    gsap.set(p.current.position, { x: 12, y: -.18, z: -10 });
-    gsap.set(p.current, { visible: false });
-    gsap.set(p.current.rotation, { x: -.18, y: -.42, z: .08 });
-    gsap.set([stem.current.position, top.current.position, side.current.position, base.current.position], { z: 0 });
-    // Keep every P fragment off-canvas until its assembly beat.
-    gsap.set(stem.current.position, { x: -4.8, y: -3.8 });
-    gsap.set(top.current.position, { x: .8, y: 5.2 });
-    gsap.set(side.current.position, { x: 4.8, y: .9 });
-    gsap.set(base.current.position, { x: 4.2, y: -3.8 });
-    camera.position.set(0, 0, 8);
-    gsap.set(stage.current.scale, { x: compact ? .56 : 1, y: compact ? .56 : 1, z: compact ? .56 : 1 });
-
-    timeline
-      .to(v.current.position, { z: 0, duration: 1.15 * speed }, .15 * speed)
-      .to(v.current.rotation, { x: 0, y: 0, z: 0, duration: 1.15 * speed }, .15 * speed)
-      .call(() => onPhase(1), [], 1.05 * speed)
-      .to(v.current.position, { x: -2.05, duration: .8 * speed, ease: "power2.inOut" }, 1.45 * speed)
-      .to(d.current.position, { x: 0, z: -1.15, duration: 1.05 * speed }, 1.45 * speed)
-      .to(d.current.position, { z: 0, duration: .45 * speed }, 2.25 * speed)
-      .to(d.current.rotation, { x: 0, y: 0, z: 0, duration: 1.05 * speed }, 1.45 * speed)
-      .call(() => onPhase(2), [], 2.35 * speed)
-      .call(() => { if (p.current) p.current.visible = true; }, [], 2.35 * speed)
-      .to(p.current.position, { x: 2.75, z: -.5, duration: 1.05 * speed, ease: "power3.out" }, 2.35 * speed)
-      .to(stem.current.position, { x: 0, y: 0, duration: .85 * speed }, 2.75 * speed)
-      .to(top.current.position, { x: 0, y: 0, duration: .85 * speed }, 2.9 * speed)
-      .to(side.current.position, { x: 0, y: 0, duration: .85 * speed }, 3.05 * speed)
-      .to(base.current.position, { x: 0, y: 0, duration: .85 * speed }, 3.2 * speed)
-      .call(() => onPhase(3), [], 3.25 * speed)
-      .call(() => onPhase(0), [], 3.82 * speed)
-      .to(v.current.position, { x: -2.05, duration: .82 * speed, ease: "expo.inOut" }, 3.85 * speed)
-      .to(d.current.position, { x: 0, duration: .82 * speed, ease: "expo.inOut" }, 3.85 * speed)
-      .to(p.current.position, { x: 2.05, y: 0, z: 0, duration: .82 * speed, ease: "expo.inOut" }, 3.85 * speed)
-      .to(p.current.rotation, { x: 0, y: 0, z: 0, duration: .82 * speed, ease: "expo.inOut" }, 3.85 * speed)
-      .to(sweep.current, { intensity: 55, duration: .22 * speed, yoyo: true, repeat: 1 }, 4.5 * speed)
-      .call(() => onPhase(4), [], 4.72 * speed)
-      .call(onPortal, [], 7.72 * speed)
-      .to(v.current.position, { x: -3.2, z: -1.6, duration: .8 * speed }, 7.72 * speed)
-      .to(d.current.position, { x: -.8, z: -1.2, duration: .8 * speed }, 7.72 * speed)
-      .to(camera.position, { x: 2.05, y: .45, z: 1.75, duration: 1.12 * speed, ease: "power2.in" }, 7.72 * speed)
-      .to(p.current.scale, { x: 5.8, y: 5.8, z: 5.8, duration: 1.12 * speed, ease: "power2.in" }, 7.72 * speed)
-      .to(camera.position, { z: -1.4, duration: .3 * speed, ease: "power4.in" }, 8.72 * speed);
-    return () => { timeline.kill(); };
-  }, [camera, compact, onComplete, onPhase, onPortal]);
-
-  return <>
-    <ambientLight intensity={.42}/><directionalLight position={[-4, 5, 7]} intensity={3.5} color="#bdd1ff"/><directionalLight position={[5, -1, 5]} intensity={2.5} color="#805fff"/><pointLight ref={sweep} position={[0, 2, 4]} intensity={8} distance={11} color="#42baff"/>
-    <group ref={stage} position={[0, 0, 0]}>
-      <group ref={v}><mesh><extrudeGeometry args={[vShape, extrude]}/><meshPhysicalMaterial {...material}/></mesh></group>
-      <group ref={d}><mesh><extrudeGeometry args={[dShape, extrude]}/><meshPhysicalMaterial {...material}/></mesh></group>
-      <group ref={p}>
-        <group ref={stem}><mesh position={[-.67, 0, .2]}><boxGeometry args={[.58, 2.9, .42, compact ? 1 : 2, compact ? 1 : 2, 1]}/><meshPhysicalMaterial {...material}/></mesh></group>
-        <group ref={top}><mesh position={[0, 1.16, .2]}><boxGeometry args={[1.5, .58, .42]}/><meshPhysicalMaterial {...material}/></mesh></group>
-        <group ref={side}><mesh position={[.48, .55, .2]}><boxGeometry args={[.56, .92, .42]}/><meshPhysicalMaterial {...material}/></mesh></group>
-        <group ref={base}><mesh position={[0, .03, .2]}><boxGeometry args={[1.5, .55, .42]}/><meshPhysicalMaterial {...material}/></mesh></group>
-      </group>
-    </group>
-  </>;
-}
-
-export function BrandLaunchScene(props: SceneProps) {
-  return <Canvas dpr={props.compact ? [1.25, 1.6] : [1, 1.5]} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} camera={{ position: [0, 0, 8], fov: props.compact ? 54 : 38 }}><LaunchGeometry {...props}/></Canvas>;
-}
+export function BrandLaunchScene(props:SceneProps){return <Canvas shadows dpr={props.compact?[1,1.15]:[1,1.5]} gl={{antialias:true,alpha:false,powerPreference:"high-performance"}} camera={{position:[2.1,.8,1.45],fov:props.compact?58:40}}><DigitalBloom {...props}/></Canvas>}

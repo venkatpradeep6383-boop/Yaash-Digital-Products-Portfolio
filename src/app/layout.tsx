@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./route-pastel.css";
 import { site } from "@/data/site";
 import { Header } from "@/components/header";
+import { SoundControl } from "@/components/cinematic/sound-control";
 
 export const metadata: Metadata = {
   ...(site.url ? { metadataBase: new URL(site.url), alternates: { canonical: "/" } } : {}),
@@ -12,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><Header />{children}</body></html>;
+  return <html lang="en"><body><Header />{children}<SoundControl /></body></html>;
 }

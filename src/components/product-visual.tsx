@@ -12,6 +12,25 @@ export function ProductVisual({ project, large = false }: { project: Project; la
   const swipeStart = useRef<number | null>(null);
   const mobileSwipeStart = useRef<number | null>(null);
 
+  if (project.slug === "canops") {
+    const desktopFrames = [
+      ["/images/canops-admin-dashboard-final.png", "Operations dashboard", "Live distribution view"],
+      ["/images/canops-admin-orders-final.png", "Order management", "Every delivery order"],
+      ["/images/canops-admin-stock-final.png", "Stock workspace", "Filled and empty inventory"],
+      ["/images/canops-admin-can-tracking-final.png", "Can control centre", "Returnable inventory"],
+    ] as const;
+    const mobileFrames = [
+      ["/images/canops-rider-home-final.jpeg", "Rider home"],
+      ["/images/canops-rider-new-customer-final.jpeg", "New customer"],
+    ] as const;
+
+    return <div className={`product-ui dk-site-showcase canops-showcase ${large ? "large" : ""}`}>
+      <div className="dk-showcase-intro"><div><span>DELIVERY OS / THREE CONNECTED EXPERIENCES</span><h2>From dispatch desk<br/><em>to doorstep.</em></h2></div><p>Admin, Rider, and Customer interfaces stay connected to the same live orders, routes, collections, and returnable-can ledger.</p></div>
+      <section className="dk-desktop-carousel" aria-label="CanOps admin screens"><div className="dk-carousel-viewport" tabIndex={0} onKeyDown={(event) => { if (event.key === "ArrowLeft") setDesktopIndex((current) => (current - 1 + desktopFrames.length) % desktopFrames.length); if (event.key === "ArrowRight") setDesktopIndex((current) => (current + 1) % desktopFrames.length); }} onPointerDown={(event) => { swipeStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerUp={(event) => { if (swipeStart.current === null) return; const distance = event.clientX - swipeStart.current; if (Math.abs(distance) > 45) setDesktopIndex((current) => distance < 0 ? (current + 1) % desktopFrames.length : (current - 1 + desktopFrames.length) % desktopFrames.length); swipeStart.current = null; }}><div className="dk-carousel-track" style={{ transform: `translateX(-${desktopIndex * 100}%)` }}>{desktopFrames.map(([src, label, note], index) => <figure className="dk-browser-frame" key={src} aria-hidden={desktopIndex !== index}><figcaption><span>0{index + 1}</span><b>{label}</b><i>{note}</i></figcaption><div className="dk-laptop-mockup"><div className="dk-laptop-screen"><Image src={src} alt={`CanOps — ${label}`} fill sizes="(max-width: 900px) 67vw, 53vw" priority={index === 0} /></div><Image className="dk-laptop-hardware" src="/images/laptop-frame-realistic.png" alt="" fill sizes="(max-width: 900px) 94vw, 74vw" priority aria-hidden="true" /><span className="dk-live-tag">ADMIN OS</span></div></figure>)}</div></div><div className="dk-carousel-controls"><button type="button" aria-label="Show previous admin screen" onClick={() => setDesktopIndex((current) => (current - 1 + desktopFrames.length) % desktopFrames.length)}>←</button><div className="dk-carousel-dots" aria-label={`Screen ${desktopIndex + 1} of ${desktopFrames.length}`}>{desktopFrames.map(([, label], index) => <button type="button" key={label} className={desktopIndex === index ? "active" : ""} aria-label={`Show ${label}`} aria-current={desktopIndex === index ? "true" : undefined} onClick={() => setDesktopIndex(index)} />)}</div><button type="button" aria-label="Show next admin screen" onClick={() => setDesktopIndex((current) => (current + 1) % desktopFrames.length)}>→</button></div></section>
+      <section className="dk-mobile-row" aria-label="CanOps Rider app screens"><div className="dk-mobile-copy"><span>02 / RIDER APPLICATION</span><h3>Every stop.<br/><em>Right in hand.</em></h3><p>The live Rider app keeps today&apos;s route, vehicle stock, customer setup, can returns, and collections inside one focused mobile workflow.</p><div className="dk-mobile-features"><span>Today&apos;s route</span><span>Customer setup</span><span>Can returns</span><span>Collections</span></div><div className="dk-mobile-progress"><b>0{mobileIndex + 1}</b><i><span style={{ width: `${((mobileIndex + 1) / mobileFrames.length) * 100}%` }} /></i><small>0{mobileFrames.length}</small></div></div><div className="dk-mobile-stage"><div className="dk-phone-glow"/><div className="dk-phone-viewer canops-phone-viewer" tabIndex={0} onKeyDown={(event) => { if (event.key === "ArrowLeft") setMobileIndex((current) => (current - 1 + mobileFrames.length) % mobileFrames.length); if (event.key === "ArrowRight") setMobileIndex((current) => (current + 1) % mobileFrames.length); }} onPointerDown={(event) => { mobileSwipeStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerUp={(event) => { if (mobileSwipeStart.current === null) return; const distance = event.clientX - mobileSwipeStart.current; if (Math.abs(distance) > 35) setMobileIndex((current) => distance < 0 ? (current + 1) % mobileFrames.length : (current - 1 + mobileFrames.length) % mobileFrames.length); mobileSwipeStart.current = null; }}><div className="dk-phone-track" style={{ transform: `translateX(-${mobileIndex * 100}%)` }}>{mobileFrames.map(([src, label]) => <figure className="dk-phone-frame canops-phone-frame" key={src}><div><Image src={src} alt={`CanOps Rider — ${label}`} fill sizes="(max-width: 700px) 78vw, 360px" /></div></figure>)}</div></div><p className="dk-drag-hint">← Drag to explore →</p><div className="dk-mobile-controls"><button type="button" aria-label="Previous Rider screen" onClick={() => setMobileIndex((current) => (current - 1 + mobileFrames.length) % mobileFrames.length)}>←</button>{mobileFrames.map(([, label], index) => <button type="button" key={label} className={mobileIndex === index ? "active" : ""} aria-label={`Show ${label}`} onClick={() => setMobileIndex(index)} />)}<button type="button" aria-label="Next Rider screen" onClick={() => setMobileIndex((current) => (current + 1) % mobileFrames.length)}>→</button></div></div></section>
+    </div>;
+  }
+
   if (project.slug === "dealup-crm") {
     const desktopFrames = [
       ["/images/dealup-desktop-overview.png", "Overview", "Executive performance"],
@@ -108,6 +127,7 @@ export function ProductVisual({ project, large = false }: { project: Project; la
 
   const projectImages: Partial<Record<Project["slug"], string>> = {
     "drip-clothing-pos": "/images/drip-clothing-pos-dashboard.png",
+    "canops": "/images/canops-admin-dashboard-final.png",
   };
   const imageSource = projectImages[project.slug] ?? "/images/original-software-showcase.png";
 
